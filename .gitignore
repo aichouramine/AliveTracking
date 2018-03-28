@@ -1,0 +1,4 @@
+# ignore firebase files
+
+.firebaserc
+firebase.json
