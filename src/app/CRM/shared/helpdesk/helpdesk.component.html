@@ -1,0 +1,27 @@
+<mat-horizontal-stepper #stepper="matHorizontalStepper">
+    <mat-step>
+        <ng-template matStepLabel></ng-template>
+        <p class="bodytext"><label class="middle-headline"> {{ 'btnaboutuscrmfaq_2' | translate }} </label> Please search for Host. (Person you
+            would like to meet)
+        </p>
+    </mat-step>
+    <mat-step>
+        <p class="bodytext"><label class="middle-headline"> {{ 'btnaboutuscrmfaq_6' | translate }} </label> Verify you host name, photo
+            <mat-icon color="primary">photo_camera</mat-icon> and details. Then Check in
+            <mat-icon color="accent">directions_walk</mat-icon> with this host.
+            <br> If your host is not on the list, please add
+            <mat-icon color="primary">add</mat-icon> a new host.
+        </p>
+    </mat-step>
+    <mat-step>
+        <p class="bodytext"><label class="middle-headline"> {{ 'btnaboutuscrmfaq_9' | translate }} </label> please verify you Host Name, photo
+            <mat-icon color="primary">photo_camera</mat-icon> and PAST Visiting records
+            <mat-icon color="accent">history</mat-icon>.
+            <br> Now search for Guest record, if this is Guest first visit, please add
+            <mat-icon color="primary">add</mat-icon> a new visitor record.
+            <br> Please Click on
+            <mat-icon color="accent">transfer_within_a_station</mat-icon> to pick this Guest to visit this host.
+            <br> Now Click on Check-In button to complete Check-In process.
+        </p>
+    </mat-step>
+</mat-horizontal-stepper>

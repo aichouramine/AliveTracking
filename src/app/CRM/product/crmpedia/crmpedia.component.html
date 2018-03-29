@@ -1,0 +1,28 @@
+<header pageTitle="{{ 'btnpedia' | translate }}" imageUrl="view_module"></header>
+<mat-card>
+    <mat-card-content>
+        <p *ngIf="currentCatalogue" class="bodytext" [hidden]="(toggleField==0)">
+            <label class="large-spacer"></label>
+            <a [routerLink]="" (click)="toggle(0)">
+                <mat-icon>clear</mat-icon>
+            </a><br/><br/>
+            <br/>
+            <b>{{ currentCatalogue.title }}</b><br/> {{ currentCatalogue.description }}<br/><br/>
+            <img src="{{ currentCatalogue.urlToImage }}" width="60%" height="60%">
+        </p>
+    </mat-card-content>
+    <mat-card-content>
+            <div *ngIf="brokenNetwork" class="label-error">
+                {{ 'NetworkConnectionError' | translate }}
+            </div>
+            <div *ngIf="catalogueLoading">
+                <mat-progress-spinner [attr.color]="primary" [mode]="indeterminate" [value]="15"></mat-progress-spinner>
+            </div>
+            <div *ngFor="let catalogue of catalogues" (click)="select(catalogue)" class="bodytext">
+                <p>
+                <label class="bodylabel">{{ catalogue.title }}</label><br/>
+                {{ catalogue.author }}
+                </p>
+            </div>
+    </mat-card-content>
+</mat-card>    

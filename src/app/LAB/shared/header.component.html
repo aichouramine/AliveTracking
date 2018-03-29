@@ -1,0 +1,85 @@
+<mat-toolbar color="primary">
+  <button mat-mini-fab color="warn" [matMenuTriggerFor]="rootMenu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #rootMenu="matMenu">
+    <button mat-menu-item [routerLink]="['/aboutus']"><mat-icon>home</mat-icon>{{ 'btnaboutus' | translate }}</button>
+    <button mat-menu-item [routerLink]="['/news']"><mat-icon>forum</mat-icon>{{ 'btnlive' | translate }}</button>
+    <!--<button mat-menu-item [routerLink]="['/crmpedia']"><mat-icon>view_module</mat-icon>{{ 'btnpedia' | translate }}</button>-->
+    <button mat-menu-item [matMenuTriggerFor]="labMenu"><mat-icon>star</mat-icon>{{ 'btnmanagelab' | translate }}</button>
+    <button mat-menu-item [routerLink]="['/pservice']"><mat-icon>data_usage</mat-icon>{{ 'btnpatientservices' | translate }}</button>
+    <button mat-menu-item [routerLink]="['/contact']"><mat-icon>contacts</mat-icon>{{ 'btncontact' | translate }}</button>
+    <button mat-menu-item [routerLink]="['/contact']"><mat-icon>account_balance</mat-icon>{{ 'btnaccount' | translate }}</button>
+    <button mat-menu-item [routerLink]="['/login']"><mat-icon>account_circle</mat-icon><span>{{ 'btnsettings' | translate }}</span></button>
+  </mat-menu>
+  <mat-menu #labMenu="matMenu">
+    <button mat-menu-item [routerLink]="['/LABTab']">{{ 'btnworkflow' | translate }}</button>
+    <button mat-menu-item [routerLink]="['/LABTab']">{{ 'btnoutsource' | translate }}</button>
+    <button mat-menu-item [routerLink]="['/LABTab']">{{ 'btnotherservices' | translate }}</button>
+    <!--<button mat-menu-item [routerLink]="['/LABTab']">{{ 'btnadmin' | translate }}</button>-->
+  </mat-menu>
+
+  <mat-icon class="example-icon" [routerLink]="['/aboutus']">{{ imageUrl }}</mat-icon>
+  <span matTooltip="{{ 'btnmainmenu' | translate }}" [routerLink]="['/aboutus']">{{ pageTitle }}</span><span class="example-spacer"></span>
+  <span matTooltip="{{ 'btnsendquickemail' | translate }}"><button mat-icon-button (click)="formShowing=!formShowing"><mat-icon>email</mat-icon></button></span>
+  <span matTooltip="{{ 'btnchangelanguage' | translate }}"><button mat-icon-button [matMenuTriggerFor]="langmenu"><mat-icon>language</mat-icon></button></span>
+  <mat-menu #langmenu="matMenu">
+    <mat-list>
+      <mat-list-item><a (click)="changeLanguage('bn')">বাঙালি</a></mat-list-item>
+      <mat-list-item><a (click)="changeLanguage('en')">English</a></mat-list-item>
+      <mat-list-item><a (click)="changeLanguage('hi')">हिंदी</a></mat-list-item>
+      <mat-list-item><a (click)="changeLanguage('gj')">ગુજરાતી</a></mat-list-item>
+      <mat-list-item><a (click)="changeLanguage('kn')">ಕನ್ನಡ</a></mat-list-item>
+      <mat-list-item><a (click)="changeLanguage('ml')">മലയാളം</a></mat-list-item>
+      <mat-list-item><a (click)="changeLanguage('pn')">ਪੰਜਾਬੀ ਦੇ</a></mat-list-item>
+      <mat-list-item><a (click)="changeLanguage('ta')">தமிழ்</a></mat-list-item>
+      <mat-list-item><a (click)="changeLanguage('tl')">తెలుగు</a></mat-list-item>
+      <mat-list-item><a (click)="changeLanguage('ur')">اردو</a></mat-list-item>
+    </mat-list>
+  </mat-menu>
+  <span matTooltip="{{ 'btnmyaccount' | translate }}"><button mat-icon-button [routerLink]="['/login']"><mat-icon>account_circle</mat-icon></button></span>
+</mat-toolbar>
+<mat-card class="form" *ngIf="formShowing">
+  <form #emailForm="ngForm" class="example-form">
+    <mat-card-title>{{ 'btncontactus' | translate }}</mat-card-title>
+    <mat-card-content *ngIf="!emailSent else showEmailSentCard">
+      <mat-form-field class="<example-full-width">
+        <input matInput type="text" placeholder="{{ 'btnname' | translate }}" id="name" name="name" #name="ngModel" ngModel required
+          minlength="3" maxlength="30">
+      </mat-form-field>
+      <span *ngIf="name.invalid && (name.dirty || name.touched)">
+      <mat-error *ngIf="name.errors['required']">{{ 'errmsgname' | translate }}</mat-error>
+      <mat-error *ngIf="name.errors['minlength']">{{ 'errmsgnameminlen' | translate }}</mat-error>
+      <mat-error *ngIf="name.errors['maxlength']">{{ 'errmsgnamemaxlen' | translate }}</mat-error>
+      </span>
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="{{ 'btnphone' | translate }}" name="phone" #phone="ngModel" ngModel required minlength="10" maxlength="10"
+          pattern="[0-9]+">
+      </mat-form-field>
+      <mat-error *ngIf="phone.invalid && (phone.dirty || phone.touched)">{{ 'errmsgphone' | translate }}</mat-error>
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="{{ 'btnemails' | translate }}" name="email" #email="ngModel" ngModel required email>
+      </mat-form-field>
+      <mat-error *ngIf="email.invalid && (email.dirty || email.touched)">{{ 'errmsgemail' | translate }}</mat-error>
+      <mat-form-field class="example-full-width">
+        <textarea matInput placeholder="{{ 'btnmessage' | translate }}" name="message" #message="ngModel" ngModel required minlength="10"
+          maxlength="200">
+        </textarea>
+      </mat-form-field>
+      <mat-hint align="end">{{message.value?.length}} / 200</mat-hint>
+      <mat-error *ngIf="message.invalid && (message.dirty || message.touched)">{{ 'errmsgmessage' | translate }}</mat-error>
+      <mat-card-actions align="start">
+        <button type="submit" (click)="onSubmit(emailForm.value);this.emailForm.reset();" mat-raised-button [disabled]="!emailForm.valid"
+          color="primary">{{ 'btnpost' | translate }}</button>
+      </mat-card-actions>
+    </mat-card-content>
+    <ng-template #showEmailSentCard>
+      <mat-card-title>
+        <font color="red">{{ 'msgemailsent' | translate }}</font>
+      </mat-card-title>
+      <mat-card-actions align="start">
+        <button type="button" (click)="this.emailForm.reset();emailSent=false;formShowing=!formShowing;" mat-raised-button color="primary">{{ 'btnclose' | translate }}</button>
+      </mat-card-actions>
+    </ng-template>
+  </form>
+</mat-card>

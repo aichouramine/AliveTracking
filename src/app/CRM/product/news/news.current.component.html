@@ -1,0 +1,90 @@
+<header pageTitle="{{ 'btnlive' | translate }}" imageUrl="forum"></header>
+<mat-tab-group>
+  <mat-tab label="{{ 'btnnews' | translate }}">
+<mat-card>
+    <mat-card-content>
+        <p *ngIf="currentCatalogue" class="bodytext" [hidden]="(toggleField==0)">
+            <label class="large-spacer"></label>
+            <a [routerLink]="" (click)="toggle(0)">
+                <mat-icon>clear</mat-icon>
+            </a><br/><br/>
+            <br/>
+            <b>{{ currentCatalogue.title }}</b><br/> {{ currentCatalogue.description }}<br/><br/>
+            <img src="{{ currentCatalogue.urlToImage }}" width="60%" height="60%">
+        </p>
+    </mat-card-content>
+    <mat-card-content>
+            <div *ngIf="brokenNetwork" class="label-error">
+                {{ 'NetworkConnectionError' | translate }}
+            </div>
+            <div *ngIf="catalogueLoading">
+                <mat-progress-spinner [attr.color]="primary" [mode]="indeterminate" [value]="15"></mat-progress-spinner>
+            </div>
+            <div *ngFor="let catalogue of catalogues" (click)="select(catalogue)" class="bodytext">
+                <p>
+                <label class="bodylabel">{{ catalogue.title }}</label><br/>
+                {{ catalogue.author }}
+                </p>
+            </div>
+    </mat-card-content>
+</mat-card>    
+  </mat-tab>
+  <mat-tab label="{{ 'btntimes' | translate }}">
+<mat-card>
+    <mat-card-content>
+        <p *ngIf="currentTimeCatalogue" class="bodytext" [hidden]="(toggleTimeField==0)">
+            <label class="large-spacer"></label>
+            <a [routerLink]="" (click)="toggleTime(0)">
+                <mat-icon>clear</mat-icon>
+            </a><br/><br/>
+            <br/>
+            <b>{{ currentTimeCatalogue.title }}</b><br/> {{ currentTimeCatalogue.description }}<br/><br/>
+            <img src="{{ currentTimeCatalogue.urlToImage }}" width="60%" height="60%">
+        </p>
+    </mat-card-content>
+    <mat-card-content>
+            <div *ngIf="brokenNetwork" class="label-error">
+                {{ 'NetworkConnectionError' | translate }}
+            </div>
+            <div *ngIf="catalogueLoading">
+                <mat-progress-spinner [attr.color]="primary" [mode]="indeterminate" [value]="15"></mat-progress-spinner>
+            </div>
+            <div *ngFor="let catalogue of timeCatalogues" (click)="selectTime(catalogue)" class="bodytext">
+                <p>
+                <label class="bodylabel">{{ catalogue.title }}</label><br/>
+                {{ catalogue.author }}
+                </p>
+            </div>
+    </mat-card-content>
+</mat-card>
+  </mat-tab>
+  <mat-tab label="{{ 'btnfinance' | translate }}">
+<mat-card>
+    <mat-card-content>
+        <p *ngIf="currentFinCatalogue" class="bodytext" [hidden]="(toggleFinField==0)">
+            <label class="large-spacer"></label>
+            <a [routerLink]="" (click)="toggleFin(0)">
+                <mat-icon>clear</mat-icon>
+            </a><br/><br/>
+            <br/>
+            <b>{{ currentFinCatalogue.title }}</b><br/> {{ currentFinCatalogue.description }}<br/><br/>
+            <img src="{{ currentFinCatalogue.urlToImage }}" width="60%" height="60%">
+        </p>
+    </mat-card-content>
+    <mat-card-content>
+            <div *ngIf="brokenNetwork" class="label-error">
+                {{ 'NetworkConnectionError' | translate }}
+            </div>
+            <div *ngIf="catalogueLoading">
+                <mat-progress-spinner [attr.color]="primary" [mode]="indeterminate" [value]="15"></mat-progress-spinner>
+            </div>
+            <div *ngFor="let catalogue of finCatalogues" (click)="selectFin(catalogue)" class="bodytext">
+                <p>
+                <label class="bodylabel">{{ catalogue.title }}</label><br/>
+                {{ catalogue.author }}
+                </p>
+            </div>
+    </mat-card-content>
+</mat-card>
+  </mat-tab>
+</mat-tab-group>

@@ -1,0 +1,125 @@
+<header pageTitle="{{ 'btnhome' | translate }}" imageUrl="home"></header> 
+
+<div *ngIf="dataLoading"><mat-progress-spinner mode="indeterminate" [attr.color]="primary" [value]="15"></mat-progress-spinner></div>
+<div *ngIf="brokenNetwork" class="label-error">{{ 'NetworkConnectionError' | translate }}</div>
+<!-- list view : toggleView==0 -->
+<!--
+<div *ngIf="toggleView==0">
+    <md-card>
+        <md-card-content>
+            <form>
+                <md-input-container><input mdInput placeholder="{{ 'vssearchvisitee' | translate }}" #box (blur)="values=box.value"></md-input-container>
+                <md-icon (click)="searchLawyer('show')" svgIcon="search"></md-icon>
+                <md-icon (click)="searchLawyer('clear');box.value='';" svgIcon="clear"></md-icon>
+                <label class="small-spacer"></label><label class="small-spacer"></label>
+                <!--
+                <a [routerLink]="['/settings']">
+                    <md-icon svgIcon="add"></md-icon>
+                </a>-->
+                <!--
+            </form>
+        </md-card-content>
+        <md-card-content>
+            <div *ngIf="pagedCatalogues.length; else nodata">
+                <pagination [items]="catalogues" (page-changed)="onPageChanged($event)"></pagination>
+                <md-hint align="start">
+                    <font size="-4" color="#cccccc">{{ 'plcholderstop50' | translate }}</font>
+        </md-hint>
+        <br/>
+                <div *ngFor="let catalogue of pagedCatalogues" (click)="selectDoc(catalogue.id)" class="bodytext">
+                    <label class="bodylabel">
+                        <img src="{{'http://www.llbindia.com/lawyerpics/' + catalogue.id + '.png'}}" onError="this.src='http://www.llbindia.com/lawyerpics/llbindia.png'" width="20px" height="20px">
+                    </label>
+                    <label class="bodylabel">
+                     {{ catalogue.fields.name }}</label><label class="small-spacer"></label>
+                    <label class="bodytext"> {{ catalogue.fields.area }}</label>
+                    <label class="bodytext"> {{ catalogue.fields.title }}</label>
+                    <label class="bodytext"> {{ catalogue.fields.expertise }}</label>
+                </div>
+            </div>
+            <ng-template #nodata>
+                <div>
+                    <p class="label-error">{{ 'nodata' | translate }}</p>
+                </div>
+            </ng-template>
+        </md-card-content>
+    </md-card>
+</div>
+-->
+<!-- detail view : toggleView==1 -->
+<!--
+<div *ngIf="toggleView==1">
+    <md-card>
+        <md-card-content>
+            <div *ngIf="mylawyer; else nocasedata" class="bodytext">
+              <a [routerLink]="['/visitor']">
+                    <md-icon svgIcon="add"></md-icon>{{ 'vsmeetperson' | translate }}
+                </a>
+                <label class="large-spacer"></label>
+                <a [routerLink]="" (click)="toggle(0)">
+                    <md-icon svgIcon="backspace"></md-icon>
+                </a>
+                <br/>
+                <label class="bodylabel">
+                        <img src="{{'http://www.llbindia.com/lawyerpics/' + mylawyer._id + '.png'}}" onError="this.src='http://www.llbindia.com/lawyerpics/llbindia.png'" width="140px" height="140px">
+                    </label><br/>
+                    <label class="bodylabel">{{ 'lblname' | translate }}</label> {{ mylawyer.name }}<br/>
+                    <label class="bodylabel">{{ 'lblarea' | translate }}</label> {{ mylawyer.area }}<br/>
+                    <label class="bodylabel">{{ 'lbltitle' | translate }}</label> {{ mylawyer.title }}<br/>
+                    <label class="bodylabel">{{ 'lblheadline' | translate }}</label> {{ mylawyer.headline }}<br/>
+                    <label class="bodylabel">{{ 'lblexpertise' | translate }}</label> {{ mylawyer.expertise }}<br/>
+                <br/>           
+                    <label class="bodylabel">{{ 'lblexperience' | translate }}</label> {{ mylawyer.experience }}<br/>
+                    <label class="bodylabel">{{ 'lbldetails' | translate }}</label> {{ mylawyer.details }}<br/>
+                <br/>
+                    <label class="bodylabel">{{ 'lblemail' | translate }}</label> {{ mylawyer.email }}<br/>
+                    <label class="bodylabel">{{ 'lblphone' | translate }}</label> {{ mylawyer.phone }}<br/>
+                <br/>
+                    <label class="bodylabel">{{ 'lblfb' | translate }}</label> {{ mylawyer.fb }}<br/>
+                    <label class="bodylabel">{{ 'lblwhatsapp' | translate }}</label> {{ mylawyer.whatsapp }}<br/>
+                    <label class="bodylabel">{{ 'lblcompany' | translate }}</label> {{ mylawyer.company }}<br/>
+                    <label class="bodylabel">{{ 'lblwebsite' | translate }}</label> {{ mylawyer.website }}<br/>
+                <br/><br/>
+                <md-divider></md-divider>
+                <label class="middle-headline">{{ 'comments' | translate }}:</label>
+                <div *ngIf="comments.length; else nocommentsdata">
+                    <span *ngFor="let comment of comments" class="bodytext">
+                        <br/><label class="bodylabel">{{ comment.date | date: 'dd/MM/yyyy'}} {{ comment.name }}:</label> {{ comment.message }}
+                    </span>
+                </div>
+                <ng-template #nocommentsdata>
+                    <div class="label-error">{{ 'nocomments' | translate }}</div>
+                </ng-template>
+                <span *ngIf="commentsSent" class="label-error">{{ 'commentsentmessage' | translate }}
+                    <label class="small-spacer"></label>
+                    <md-icon (click)="this.commentsForm.reset();commentsSent=false;toggle(0);" svgIcon="clear"></md-icon>
+                </span>
+                <md-divider></md-divider>
+                <label class="middle-headline">{{ 'postcomments' | translate }}</label><br/>
+                <form #commentsForm="ngForm" (ngSubmit)="save(commentsForm.value);this.commentsForm.form.pristine=true;" novalidate>
+                    <input readonly="" id="postid" type="hidden" name="postid" [(ngModel)]="mylawyer._id">
+                    <input readonly="" id="date" type="hidden" name="date" [(ngModel)]="currentDate">
+                    <input readonly="" id="documenttype" type="hidden" name="documenttype" [(ngModel)]="docType">
+                    <md-input-container class="example-full-width"><input mdInput placeholder="{{ 'plcholdername' | translate }}" required name="name" ngModel></md-input-container>
+                    <md-input-container class="example-full-width"><input mdInput placeholder="{{ 'plcholderemail' | translate }}" name="email" ngModel></md-input-container>
+                    <br/>
+                    <md-input-container class="example-full-width">
+                        <textarea rows="10" cols="40" mdInput id="message" placeholder="{{ 'plcholderdetails' | translate }}" required name="message"
+                            ngModel></textarea>
+                        <md-hint align="end"><label class="label-hint">{{ 'plcholderdetails' | translate }}</label></md-hint>
+                    </md-input-container>
+                    <md-card-actions align="start">
+                        <button type="submit" (click)="onCommentsSubmit(commentsForm.value);this.commentsForm.reset();" md-raised-button [disabled]="!commentsForm.valid"
+                            color="primary">{{ 'postbutton' | translate }}</button>
+                    </md-card-actions>
+                </form>
+            </div>
+            <ng-template #nocasedata>
+                <div>
+                    <p class="label-error">{{ 'nocasedata' | translate }}</p>
+                </div>
+            </ng-template>
+        </md-card-content>
+    </md-card>
+</div>
+-->

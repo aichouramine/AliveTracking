@@ -1,0 +1,150 @@
+<header pageTitle="{{ 'btnattendance' | translate }}" imageUrl="fingerprint"></header>
+<mat-tab-group (selectedTabChange)="onLinkClick($event)">
+    <mat-tab label="{{ 'btngpsattendance' | translate }}">
+        <mat-card>
+            <mat-card-content *ngIf="!attendanceSaved else showAttendnaceSaved">
+                <button type="submit" (click)="setAttendance();" mat-raised-button color="primary">{{ 'btnsubmitattendance' | translate }}</button>
+                <br><br><br> {{ 'btnname' | translate }} : {{ myData.name }}<br> {{ 'btnemails' | translate }} : {{ myData.email
+                }}
+                <br> {{ 'btnorganization' | translate }} : {{ myData.company }}<br> {{ 'btndate' | translate }}: {{ currentDate
+                }}
+                <br> {{ 'btlgpsloc' | translate }} <button mat-icon-button (click)="showCurrentLocation = true;"><mat-icon color="primary">track_changes</mat-icon></button>
+                <div *ngIf="showCurrentLocation">
+                    <div *ngIf="lat && lng else showNoLocation" class='agm-map-container-inner'>
+                        <span class="med-spacer"></span>
+                        <span class="med-spacer"></span>
+                        <span matTooltip="{{ 'btnclear' | translate }}"><mat-icon color="primary" (click)="showCurrentLocation = false;">clear</mat-icon></span>
+                        <agm-map [latitude]="lat" [longitude]="lng" [zoom]='15'>
+                            <agm-marker [latitude]="lat" [longitude]="lng">
+                                <agm-info-window>
+                                    <h3><strong>Howdy!</strong></h3>
+                                    <p>You are here!</p>
+                                </agm-info-window>
+                            </agm-marker>
+                        </agm-map>
+                    </div>
+                </div>
+            </mat-card-content>
+            <ng-template #showNoLocation>
+                <span class="label-error">{{ 'btnenablegps' | translate }}<mat-icon>gps_off</mat-icon></span>
+            </ng-template>
+            <ng-template #showAttendnaceSaved>
+                <span class="label-error">{{ 'msgcutomersaved' | translate }}</span>
+                <br>
+                <button mat-raised-button color="primary" (click)="attendanceSaved = false;" [routerLink]="['/aboutus']">{{ 'btnclear' | translate}}</button>
+            </ng-template>
+        </mat-card>
+    </mat-tab>
+    <mat-tab label="{{ 'btnlive' | translate }}">
+        <mat-card>
+            <mat-card-content>
+                <mat-card-title>
+                    {{ 'btlgpsloc' | translate }} <button mat-icon-button (click)="showCurrentLocation = true;"><mat-icon color="primary">track_changes</mat-icon></button>
+                    <span class="med-spacer"></span>
+                    <span matTooltip="{{ 'btnpromember' | translate }}" (click)="openSnackBar('','')" class="label-error">
+                                    <mat-icon>lock</mat-icon>
+                                    </span>
+                </mat-card-title>
+                <div *ngIf="showCurrentLocation">
+                    <div *ngIf="lat && lng else showNoLocation" class='agm-map-container-inner'>
+                        <span class="med-spacer"></span>
+                        <span class="med-spacer"></span>
+                        <span matTooltip="{{ 'btnclear' | translate }}"><mat-icon color="primary" (click)="showCurrentLocation = false;">clear</mat-icon></span>
+                        <agm-map [latitude]="lat" [longitude]="lng" [zoom]='15'>
+                            <agm-marker [latitude]="lat" [longitude]="lng">
+                                <agm-info-window>
+                                    <h3><strong>Howdy!</strong></h3>
+                                    <p>You are here!</p>
+                                </agm-info-window>
+                            </agm-marker>
+                        </agm-map>
+                    </div>
+                </div>
+            </mat-card-content>
+            <ng-template #showNoLocation>
+                <span class="label-error">{{ 'btnenablegps' | translate }}<mat-icon>gps_off</mat-icon></span>
+            </ng-template>
+
+            <fileupload fileUrl="attendance" docId="NA"></fileupload>
+        </mat-card>
+    </mat-tab>
+    <mat-tab label="{{ 'btnhistory' | translate }}">
+        <mat-card>
+            <mat-card-content>
+                <div *ngIf="(toggleField=='myLocMode') else (toggleField=='myPicMode') ?  showMyPic : showMyLocation">
+                    <div class="example-header">
+                        <mat-form-field>
+                            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'btnsearchrecent' | translate}}">
+                        </mat-form-field>
+                        <span class="med-spacer"></span>
+                        <span matTooltip="{{ 'btnpromember' | translate }}" (click)="openSnackBar('','')" class="label-error">
+                                    <mat-icon>lock</mat-icon>
+                                    </span>
+                    </div>
+
+                    <div class="example-container mat-elevation-z8">
+                        <span class="label-hint" align="end">{{ 'btnshowrecent' | translate }}</span>
+                        <mat-table #table [dataSource]="dataSource" matSort>
+
+                            <ng-container matColumnDef="useremail">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> {{'btnemail' | translate}} </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.useremail }} </mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="createdAt">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> {{'btndate' | translate}} </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.createdAt | date:'medium' }} </mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="id">
+                                <mat-header-cell *matHeaderCellDef> {{'btnmap' | translate}} </mat-header-cell>
+                                <mat-cell *matCellDef="let row">
+                                    <span matTooltip="{{ 'btnzoom' | translate }}"><button mat-icon-button (click)="this.showLocation(row.lat,row.long);"><mat-icon color="primary">track_changes</mat-icon></button></span>
+                                </mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="path">
+                                <mat-header-cell *matHeaderCellDef> {{'btnselfie' | translate}} </mat-header-cell>
+                                <mat-cell *matCellDef="let row">
+                                    <span matTooltip="{{ 'btnzoom' | translate }}"><button mat-icon-button (click)="this.showPic(row.path);"><mat-icon color="primary">photo_camera</mat-icon></button></span>
+                                </mat-cell>
+                            </ng-container>
+
+                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                        </mat-table>
+                        <mat-paginator #paginator [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        <ng-template #showMyLocation>
+            <span class="med-spacer"></span>
+            <span class="med-spacer"></span>
+            <span matTooltip="{{ 'btnclear' | translate }}"><mat-icon color="primary" (click)="toggle('myLocMode');">clear</mat-icon></span>
+            <div *ngIf="mylat && mylong" class='agm-map-container-inner'>
+                <agm-map [latitude]="mylat" [longitude]="mylong" [zoom]='15'>
+                    <agm-marker [latitude]="mylat" [longitude]="mylong">
+                        <agm-info-window>
+                            <h3><strong>Howdy!</strong></h3>
+                            <p>You are here!</p>
+                        </agm-info-window>
+                    </agm-marker>
+                </agm-map>
+            </div>
+        </ng-template>
+        <ng-template #showMyPic>
+            <span class="med-spacer"></span>
+            <span class="med-spacer"></span>
+            <span matTooltip="{{ 'btnclear' | translate }}"><mat-icon color="primary" (click)="toggle('myLocMode');">clear</mat-icon></span>
+            <div *ngIf="path == 'NA' else MyPic">
+                <br><br>
+                <span class="label-error">{{ 'btnnoselfie' | translate }}<mat-icon>camera_roll</mat-icon></span>
+            </div>
+        </ng-template>
+        <ng-template #MyPic>
+            <br><br>
+                <img [src]="path" width="300" height="300"><br>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>

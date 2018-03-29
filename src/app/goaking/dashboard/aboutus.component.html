@@ -1,0 +1,28 @@
+<header pageTitle="GOA-KING.IN" imageUrl="home"></header>
+<mat-card>
+    <mat-card-content *ngIf="toggleField else showDetails">
+        <button mat-raised-button color="accent">{{ currentNumber?.STATION }} ( {{currentNumber?.TRUCKNO}} )</button>
+        <button mat-raised-button>{{currentNumber?.RECOVERYDT}}</button>
+        <br><br>
+        <mat-chip-list class="mat-chip-list-stacked">
+            <mat-chip class="mat-chip-list-stacked" *ngFor="let data of dataDates" color="primary" selected="true">
+                <span (click)="toggle('show',data.RECOVERYDT)">{{data.RECOVERYDT}}</span>
+            </mat-chip>
+            <br><br>
+        </mat-chip-list>
+    </mat-card-content>
+    <ng-template #showDetails>
+        <mat-icon (click)="toggle('hide')">clear</mat-icon>
+        <br>
+        <mat-list>
+            <h3 mat-subheader>
+                <mat-icon mat-list-icon>date_range</mat-icon>
+                Date <mat-icon mat-list-icon>book</mat-icon>          #</h3>
+            <mat-list-item *ngFor="let number of allNumbers">
+                <mat-icon mat-list-icon>date_range</mat-icon>
+                <h4 mat-line>{{number.RECOVERYDT}}<mat-icon mat-list-icon>book</mat-icon>{{number.STATION}}</h4>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-list>
+    </ng-template>
+</mat-card>

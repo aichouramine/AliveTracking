@@ -1,0 +1,250 @@
+<!--<header pageTitle="{{ 'btnvisit' | translate }}" imageUrl="transfer_within_a_station"></header>-->
+<mat-card>
+    <mat-card-content>
+        <div *ngIf="(toggleField=='searchMode') else (toggleField=='addMode')? showAddMode : ((toggleField=='editMode')? showEditMode : showResMode)">
+            <!-- searchmode -->
+            <form #searchFormData="ngForm" class="example-form">
+                <mat-card-actions align="start">
+                    <button type="button" (click)="toggle('resMode');getFilterData(searchFormData.value);" mat-raised-button [disabled]="!searchFormData.valid"
+                        color="primary">{{ 'btnsearchguest' | translate }}</button>
+                    <span class="med-spacer"></span>
+                    <span matTooltip="{{ 'btnaddnew' | translate }}"><mat-icon color="primary" (click)="this.customerForm.reset();toggle('addMode')">add</mat-icon></span>
+                    <span class="small-spacer"></span>
+                    <span matTooltip="{{ 'btnshowrecent' | translate }}"><mat-icon color="primary" (click)="toggle('resMode');getData();">cached</mat-icon></span>
+                </mat-card-actions>
+                <mat-form-field class="<example-full-width">
+                    <input matInput [disabled]="phone.value > ''" type="text" placeholder="{{ 'btnsearchguestname' | translate }}" id="name" name="name"
+                        #name="ngModel" ngModel minlength="3" maxlength="50">
+                </mat-form-field>
+                <br>
+                <mat-form-field class="<example-full-width">
+                    <input matInput [disabled]="name.value > ''" type="text" placeholder="{{ 'btnphone' | translate }}" id="phone" name="phone"
+                        #phone="ngModel" ngModel minlength="3" maxlength="50" pattern="[0-9]+">
+                </mat-form-field>
+                <mat-error *ngIf="phone.invalid && (phone.dirty || phone.touched)">{{ 'errmsgphone' | translate }}</mat-error>
+                <br>
+                <mat-form-field>
+                    <input matInput [matDatepicker]="pickerfromdt" placeholder="{{ 'btnfromdt' | translate }}" id="fromdt" name="fromdt" #fromdt="ngModel"
+                        [ngModel]="currentDate7">
+                    <mat-datepicker-toggle matSuffix [for]="pickerfromdt"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerfromdt></mat-datepicker>
+                </mat-form-field>
+                <br>
+                <mat-form-field>
+                    <input matInput [matDatepicker]="pickertodt" placeholder="{{ 'btntodt' | translate }}" id="todt" name="todt" #todt="ngModel"
+                        [ngModel]="currentDate">
+                    <mat-datepicker-toggle matSuffix [for]="pickertodt"></mat-datepicker-toggle>
+                    <mat-datepicker #pickertodt></mat-datepicker>
+                </mat-form-field>
+            </form>
+        </div>
+    </mat-card-content>
+</mat-card>
+<!-- addMode -->
+<ng-template #showAddMode>
+    <form [formGroup]="customerForm" (ngSubmit)="setData(customerForm.value);toggle('resMode');" novalidate>
+        <mat-card-actions align="start">
+            <button type="submit" mat-raised-button [disabled]="!customerForm.valid" color="primary">{{ 'plcholdervisitoradd' | translate }}</button>
+            <button type="reset" (click)="this.customerForm.reset();" mat-raised-button [disabled]="!customerForm.valid" color="primary">{{ 'btnclear' | translate }}</button>
+            <span class="med-spacer"></span>
+            <span matTooltip="{{ 'btnsearch' | translate }}"><mat-icon color="primary" (click)="toggle('searchMode')">search</mat-icon></span>
+            <span class="small-spacer"></span>
+            <span matTooltip="{{ 'btnshowrecent' | translate }}"><mat-icon color="primary" (click)="toggle('resMode');getData();">cached</mat-icon></span>
+        </mat-card-actions>
+        <mat-error *ngIf="savedCustomerFlag">
+            {{ 'msghostsaved' | translate }}
+            <label class="small-spacer"></label>
+            <mat-icon (click)="this.customerForm.reset();savedCustomerFlag=false;toggle('searchMode');" svgIcon="clear"></mat-icon>
+        </mat-error>
+        <mat-error *ngIf="customerForm.controls.customerid?.errors && (customerForm.controls.customerid?.dirty || customerForm.controls.customerid?.touched)"
+            class="label-error">
+            {{ 'errhostid' | translate }}
+        </mat-error>
+        <mat-error *ngIf="customerForm.controls.name?.errors && (customerForm.controls.name?.dirty || customerForm.controls.name?.touched)"
+            class="label-error">
+            {{ 'errhostname' | translate }}
+        </mat-error>
+        <mat-error *ngIf="customerForm.controls.phone?.errors && (customerForm.controls.phone?.dirty || customerForm.controls.phone?.touched)"
+            class="label-error">
+            {{ 'errmsgphone' | translate }}
+        </mat-error>
+        <mat-input-container><input matInput placeholder="{{ 'plcholderhostid' | translate }}" name="customerid" id="customerid" formControlName="customerid"
+                ngModel required minlength="5"></mat-input-container><br>
+        <mat-input-container><input matInput placeholder="{{ 'plcholdername' | translate }}" name="name" id="name" formControlName="name" ngModel
+                required minlength="5"></mat-input-container><br>
+        <mat-input-container><input matInput placeholder="{{ 'plcholderphone' | translate }}" name="phone" id="phone" formControlName="phone"
+                ngModel required minlength="10" pattern="[0-9]+"></mat-input-container><br>
+        <mat-card-actions>
+            <a [routerLink]="" (click)="addRow()">
+                <mat-icon>add</mat-icon>
+            </a>
+            <label class="med-spacer"></label>
+            <a [routerLink]="" (click)="showAll()">
+                <mat-icon>content_copy</mat-icon>
+            </a>
+        </mat-card-actions>
+        <div formArrayName="contents">
+            <mat-divider></mat-divider>
+            <div *ngFor="let content of contents.controls; let i=index" [formGroupName]="i">
+                <!--
+                    <mat-select placeholder="{{ 'plcholderfield' | translate }}" name="key" #key formControlName="key">
+                        <mat-option *ngFor="let item of items" [value]="item" (click)="selectData(item)">
+                            {{item}}
+                        </mat-option>
+                    </mat-select>
+                    -->
+                <mat-input-container>
+                    <input matInput placeholder="{{ 'plcholderfield' | translate }}" name="key" id="key" formControlName="key">
+                </mat-input-container>
+                <mat-input-container>
+                    <input matInput placeholder="{{ 'plcholdervalue' | translate }}" name="value" id="value" formControlName="value">
+                </mat-input-container>
+                <a [routerLink]="" (click)="deleteRow(i)">
+                    <mat-icon>delete</mat-icon>
+                </a>
+            </div>
+        </div>
+        <div>
+            <mat-input-container class="example-full-width">
+                <textarea matInput rows="10" cols="40" type="text" placeholder="{{ 'plcholdercomments' | translate }}" name="comments" id="comments"
+                    formControlName="comments" ngModel></textarea>
+            </mat-input-container>
+        </div>
+    </form>
+</ng-template>
+<!-- edit mode -->
+<ng-template #showEditMode>
+    <form [formGroup]="customerForm" (ngSubmit)="updateCustomerDoc(myCustID,customerForm.value);" novalidate>
+        <mat-card-actions align="start">
+            <button type="submit" mat-raised-button [disabled]="!this.customerForm.valid || this.customerForm.pristine" color="primary">{{ 'plcholdervisitoradd' | translate }}</button>
+            <button type="reset" (click)="this.customerForm.reset();" mat-raised-button [disabled]="!customerForm.valid || this.customerForm.pristine"
+                color="primary">{{ 'btnclear' | translate }}</button>
+            <span class="med-spacer"></span>
+            <span matTooltip="{{ 'btnsearch' | translate }}"><mat-icon color="primary" (click)="toggle('searchMode')">search</mat-icon></span>
+            <span class="small-spacer"></span>
+            <span matTooltip="{{ 'btnshowrecent' | translate }}"><mat-icon color="primary" (click)="toggle('resMode');getData();">cached</mat-icon></span>
+        </mat-card-actions>
+        <mat-error *ngIf="savedCustomerFlag">
+            {{ 'msghostsaved' | translate }}
+            <label class="small-spacer"></label>
+            <mat-icon (click)="this.customerForm.reset();savedCustomerFlag=false;toggle('searchMode');" svgIcon="clear"></mat-icon>
+        </mat-error>
+        <mat-error *ngIf="customerForm.controls.customerid.invalid && (customerForm.controls.customerid.dirty || customerForm.controls.customerid.touched)"
+            class="label-error">
+            {{ 'errhostid' | translate }}
+        </mat-error>
+        <mat-error *ngIf="customerForm.controls.name.invalid && (customerForm.controls.name?.dirty || customerForm.controls.name?.touched)"
+            class="label-error">
+            {{ 'errhostname' | translate }}
+        </mat-error>
+        <mat-error *ngIf="customerForm.controls.phone?.invalid && (customerForm.controls.phone?.dirty || customerForm.controls.phone?.touched)"
+            class="label-error">
+            {{ 'errmsgphone' | translate }}
+        </mat-error>
+        <mat-input-container><input matInput placeholder="{{ 'plcholderhostid' | translate }}" name="customerid" id="customerid" formControlName="customerid"
+                required minlength="5" [ngModel]="(myDocData | async)?.customerid"></mat-input-container><br>
+        <mat-input-container><input matInput placeholder="{{ 'plcholdername' | translate }}" name="name" id="name" formControlName="name" [ngModel]="(myDocData | async)?.name"
+                required minlength="5"></mat-input-container><br>
+        <mat-input-container><input matInput placeholder="{{ 'plcholderphone' | translate }}" name="phone" id="phone" formControlName="phone"
+                [ngModel]="(myDocData | async)?.phone" required minlength="10" pattern="[0-9]+"></mat-input-container><br>
+        <!--
+        <mat-card-actions>
+            <a [routerLink]="" (click)="addRow()">
+                <mat-icon>add</mat-icon>
+            </a>
+            <label class="med-spacer"></label>
+            <a [routerLink]="" (click)="showAll()">
+                <mat-icon>content_copy</mat-icon>
+            </a>
+        </mat-card-actions>-->
+        <div formArrayName="contents">
+            <mat-divider></mat-divider>
+            <div *ngFor="let content of (myDocData | async)?.contents; let i=index" [formGroupName]="i">
+                <!--
+                    <mat-select placeholder="{{ 'plcholderfield' | translate }}" name="key" #key formControlName="key">
+                        <mat-option *ngFor="let item of items" [value]="item" (click)="selectData(item)">
+                            {{item}}
+                        </mat-option>
+                    </mat-select>
+                    -->
+                <div *ngIf="content.key">
+                    <mat-input-container>
+                        <input matInput placeholder="{{ 'plcholderfield' | translate }}" name="key" id="key" formControlName="key" [(ngModel)]="content.key">
+                    </mat-input-container>
+                    <mat-input-container>
+                        <input matInput placeholder="{{ 'plcholdervalue' | translate }}" name="value" id="value" formControlName="value" [(ngModel)]="content.value">
+                    </mat-input-container>
+                </div>
+            </div>
+        </div>
+        <div>
+            <mat-input-container class="example-full-width">
+                <textarea matInput rows="10" cols="40" type="text" placeholder="{{ 'plcholdercomments' | translate }}" name="comments" id="comments"
+                    formControlName="comments" [ngModel]="(myDocData | async)?.comments"></textarea>
+            </mat-input-container>
+        </div>
+        <span class="label-hint">{{ 'btnrecord_1' | translate }} {{(myDocData | async)?.useremail}} {{ 'btnrecord_2' | translate }} {{(myDocData | async)?.updatedAt}}</span>
+    </form>
+</ng-template>
+<!-- Results mode -->
+<ng-template #showResMode>
+    <mat-card-actions align="start">
+        <mat-card-title class="small-headline">{{ 'btnsearchguest' | translate }}</mat-card-title>
+        <span class="med-spacer"></span>
+        <span class="med-spacer"></span>
+        <span class="med-spacer"></span>
+        <span matTooltip="{{ 'btnaddnew' | translate }}"><mat-icon color="primary" (click)="this.customerForm.reset();toggle('addMode')">add</mat-icon></span>
+        <span class="small-spacer"></span>
+        <span matTooltip="{{ 'btnsearchall' | translate }}"><mat-icon color="primary" (click)="toggle('searchMode')">search</mat-icon></span>
+    </mat-card-actions>
+    <div *ngIf="takeHostSelfie" width="300">
+        <button type="reset" (click)="takeHostSelfie=false;" mat-icon-button color="primary"><mat-icon>clear</mat-icon></button>
+        <br>
+        <fileupload fileUrl="guest" docId="{{this.myDocId}}"></fileupload>
+    </div>
+    <div *ngIf="showHostSelfie" width="300">
+        <button type="reset" (click)="showHostSelfie=false;" mat-icon-button color="primary"><mat-icon>clear</mat-icon></button>
+        <br>
+        <img [src]="myPicId" width="300" height="300"><br>
+    </div>
+    <div class="example-header">
+        <mat-form-field>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'btnsearchrecent' | translate}}">
+        </mat-form-field>
+    </div>
+    <div class="example-container mat-elevation-z8">
+        <span class="label-hint" align="end">{{ 'btnshowrecent' | translate }}</span>
+        <mat-table [dataSource]="dataSource" matSort>
+
+            <ng-container matColumnDef="customerid">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{'btnid' | translate}} </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.customerid}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{'btnname' | translate}} </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="phone">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{'btnphone' | translate}} </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.phone}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="key">
+                <mat-header-cell *matHeaderCellDef> {{'btnaction' | translate}} </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <button mat-icon-button matTooltip="{{ 'btnzoom' | translate }}" *ngIf="row.path" (click)="this.myPicId=row.path;this.showHostSelfie=true;"><mat-icon color="primary">photo_camera</mat-icon></button>
+                    <button mat-icon-button matTooltip="{{ 'btnselfie' | translate }}" (click)="this.myDocId=row.id;this.takeHostSelfie=true;" *ngIf="!row.path"><mat-icon color="warn">camera_roll</mat-icon></button>
+                    <span matTooltip="{{ 'btnedit' | translate }}"><button mat-icon-button (click)="this.showAll_edit();getCustomerDoc(row.id);"><mat-icon color="primary">edit</mat-icon></button></span>
+                    <span matTooltip="{{ 'btndelete' | translate }}"><button mat-icon-button (click)="deleteCustomerDoc(row.id);"><mat-icon color="primary">delete</mat-icon></button></span>
+                    <span matTooltip="{{ 'btncheckin' | translate }}"><button mat-icon-button (click)="guestUpdatedDoc([row.id,row.customerid,row.name,row.path]);"><mat-icon color="accent">transfer_within_a_station</mat-icon></button></span>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+</ng-template>

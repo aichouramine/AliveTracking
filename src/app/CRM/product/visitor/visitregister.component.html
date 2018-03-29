@@ -1,0 +1,76 @@
+<header pageTitle="{{ 'btnvisit' | translate }}" imageUrl="transfer_within_a_station"></header>
+<mat-card>
+    <mat-card-content  *ngIf="!savedDataflag">
+        <span class="middle-headline">{{ 'btnvisitregister' | translate }}</span>
+        <span class="med-spacer"></span>
+        <mat-icon [routerLink]="['/host']" matTooltip="{{ 'btnsearchhost' | translate }}" color="primary">backspace</mat-icon>
+        <span class="med-spacer"></span>
+        <mat-icon matTooltip="{{ 'btnhelpdesk' | translate }}" color="primary" (click)="toggleHelp()">help_outline</mat-icon>
+        <p *ngIf="showHelp">
+            <br><span class="med-spacer"></span><span class="med-spacer"></span>
+            <mat-icon color="primary" (click)="toggleHelp()">clear</mat-icon><br>
+            <helpdesk></helpdesk>
+        </p>
+        <br><br>
+        <span class="label-error">{{ 'plcholderhostid' | translate }} :</span> {{ (myDocData | async)?.customerid }}
+        <button mat-icon-button matTooltip="{{ 'btnhistory' | translate }}" (click)="toggleHostHistory(docId)"><mat-icon color="primary">history</mat-icon></button>
+        <div [hidden]="!showHosthistory" width="300">
+            <br>
+            <button type="reset" (click)="this.showHosthistory=false;" mat-icon-button color="primary"><mat-icon>clear</mat-icon></button>
+            <br>
+            <ul>
+                <li *ngFor="let vh of visitHistory">
+                    {{ vh.checkin | date:'medium'}} - {{ vh.guestID}} {{ vh.guestName}}
+                    <button mat-icon-button matTooltip="{{ 'btnzoom' | translate }}" *ngIf="vh.guestPic" (click)="toggleGuestHistPic(vh.guestPic)"><mat-icon color="primary">photo_camera</mat-icon></button>            
+                </li>
+            </ul>
+        </div>
+        <div [hidden]="!showGuestHistSelfie" width="300">
+            <br>
+            <button type="reset" (click)="toggleGuestHistPic()" mat-icon-button color="primary"><mat-icon>clear</mat-icon></button>
+            <br>
+            <img [src]="guestHistPicPath" width="300" height="300">
+        </div>
+        <br>
+        <span class="label-error">{{ 'plcholderhostname' | translate }} :</span> {{ (myDocData | async)?.name }}
+        <button mat-icon-button matTooltip="{{ 'btnzoom' | translate }}" *ngIf="(myDocData | async)?.path" (click)="toggleHostPic()"><mat-icon color="primary">photo_camera</mat-icon></button>
+        <div [hidden]="!showHostSelfie" width="300">
+            <br>
+            <button type="reset" (click)="toggleHostPic()" mat-icon-button color="primary"><mat-icon>clear</mat-icon></button>
+            <br>
+            <img [src]="(myDocData | async)?.path" width="300" height="300">
+        </div>
+        <br><span class="label-error">{{ 'plcholderguestid' | translate }} :</span> {{ guestDoc[1] }}
+        <br><span class="label-error">{{ 'plcholderguestname' | translate }} :</span> {{ guestDoc[2] }}
+        <button mat-icon-button matTooltip="{{ 'btnzoom' | translate }}" *ngIf="guestDoc[3]" (click)="toggleGuestPic()"><mat-icon color="primary">photo_camera</mat-icon></button>
+        <div [hidden]="!showGuestSelfie" width="300">
+            <br>
+            <button type="reset" (click)="toggleGuestPic()" mat-icon-button color="primary"><mat-icon>clear</mat-icon></button>
+            <br>
+            <img [src]="guestDoc[3]" width="300" height="300">
+        </div>
+        <br><span class="label-error">{{ 'btncheckin' | translate }} :</span> {{ currentDate | date:'medium' }}
+        <form #regsiterForm="ngForm" class="example-form">
+            <input type="hidden" placeholder="hostDocID" id="hostDocID" name="hostDocID" #hostDocID="ngModel" [ngModel]="docId" required>
+            <input type="hidden" placeholder="hostID" id="hostID" name="hostID" #hostID="ngModel" [ngModel]="(myDocData | async)?.customerid" required>
+            <input type="hidden" placeholder="hostName" id="hostName" name="hostName" #hostName="ngModel" [ngModel]="(myDocData | async)?.name" required>
+            <input type="hidden" *ngIf="(myDocData | async)?.path" placeholder="hostPic" id="hostPic" name="hostPic" #hostPic="ngModel" [ngModel]="(myDocData | async)?.path">
+            <input type="hidden" placeholder="guestDocID" id="guestDocID" name="guestDocID" #guestDocID="ngModel" [ngModel]="guestDoc[0]" required>
+            <input type="hidden" placeholder="guestID" id="guestID" name="guestID" #guestID="ngModel" [ngModel]="guestDoc[1]" required>
+            <input type="hidden" placeholder="guestName" id="guestName" name="guestName" #guestName="ngModel" [ngModel]="guestDoc[2]" required>
+            <input type="hidden" *ngIf="guestDoc[3]" placeholder="guestPic" id="guestPic" name="guestPic" #guestPic="ngModel" [ngModel]="guestDoc[3]">
+            <input type="hidden" placeholder="checkin" id="checkin" name="checkin" #checkin="ngModel" [ngModel]="currentDate" required>
+            <mat-card-actions align="start">
+                <button type="button" (click)="onSubmit(regsiterForm.value);this.regsiterForm.reset();" mat-raised-button [disabled]="!regsiterForm.valid"
+                    color="primary">{{ 'btncheckin' | translate }}</button>
+            </mat-card-actions>
+        </form>
+    </mat-card-content>
+    <mat-card-content  *ngIf="!savedDataflag">
+        <guest (guestUpdated)="handleGuestUpdated($event)"></guest>
+    </mat-card-content>
+    <mat-card-content *ngIf="savedDataflag">
+        Visitor checked in successfully.<br>
+        <mat-icon [routerLink]="['/host']" matTooltip="{{ 'btnsearchhost' | translate }}" color="primary">backspace</mat-icon>
+    </mat-card-content>
+</mat-card>

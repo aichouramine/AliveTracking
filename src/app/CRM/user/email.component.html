@@ -1,0 +1,32 @@
+<header pageTitle="{{ 'btnsettings' | translate }}" imageUrl="account_circle"></header>
+<mat-card>
+  <form #formData='ngForm' (ngSubmit)="onSubmit(formData)">
+  <mat-card-content>
+    <mat-card-title>
+      <span class="small-headline">Login with email</span>
+      <span class="small-spacer"></span><a [routerLink]="['/login']" color="primary"><mat-icon>backspace</mat-icon></a>
+    </mat-card-title>
+    <mat-card-actions align="start" [@fallIn]='state' *ngIf="error">
+      <mat-error>{{ 'erremaillogin' | translate }}</mat-error>
+    </mat-card-actions>
+    <div *ngIf="dataLoading"><mat-progress-spinner mode="indeterminate" [attr.color]="primary" [value]="15"></mat-progress-spinner></div>
+    <div *ngIf="brokenNetwork" class="label-error">{{ 'NetworkConnectionError' | translate }}</div>
+    <mat-card-actions align="start">
+      <button type="submit" [disabled]="!formData.valid" mat-raised-button color="primary">Log in</button>
+    </mat-card-actions>
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="{{ 'btnemails' | translate }}" name="email" #email="ngModel" ngModel required email>
+      </mat-form-field>
+      <mat-error *ngIf="email.invalid && (email.dirty || email.touched)">{{ 'errmsgemail' | translate }}</mat-error>
+      <mat-form-field class="example-full-width">
+        <input matInput type="password" placeholder="{{ 'password' | translate }}" name="password" #password="ngModel" ngModel required minlength="5" maxlength="30">
+      </mat-form-field>
+      <span *ngIf="password.invalid && (password.dirty || password.touched)">
+      <mat-error *ngIf="password.errors['required']">{{ 'errmsgpassword' | translate }}</mat-error>
+      <mat-error *ngIf="password.errors['minlength']">{{ 'errmsgpasswordminchar' | translate }}</mat-error>
+      <mat-error *ngIf="password.errors['maxlength']">{{ 'errmsgnamemaxlen' | translate }}</mat-error>
+      </span>
+  </mat-card-content>
+  </form>
+</mat-card>
+<footer></footer>

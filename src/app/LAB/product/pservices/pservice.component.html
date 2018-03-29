@@ -1,0 +1,337 @@
+<header pageTitle="{{ 'btnpatientservices' | translate }}" imageUrl="data_usage"></header>
+<mat-card>
+    <mat-card-content>
+        <div *ngIf="(toggleField=='searchMode') else (toggleField=='addMode')? showAddMode : ((toggleField=='editMode')? showEditMode : showResMode)">
+            <!-- searchmode -->
+            <form #searchFormData="ngForm" class="example-form">
+                <mat-card-actions align="start">
+                    <button type="button" (click)="toggle('resMode');getFilterData(searchFormData.value);" mat-raised-button [disabled]="!searchFormData.valid"
+                        color="primary">{{ 'btnsearch' | translate }}</button>
+                    <span class="med-spacer"></span>
+                    <span matTooltip="{{ 'btnaddnew' | translate }}"><mat-icon color="primary" (click)="toggle('addMode')">add</mat-icon></span>
+                    <span class="small-spacer"></span>
+                    <span matTooltip="{{ 'btnshowrecent' | translate }}"><mat-icon color="primary" (click)="toggle('resMode');getData();">cached</mat-icon></span>
+                </mat-card-actions>
+                <mat-form-field class="<example-full-width">
+                    <input matInput [disabled]="phone.value > ''" type="text" placeholder="{{ 'btnname' | translate }}" id="name" name="name"
+                        #name="ngModel" ngModel minlength="3" maxlength="50">
+                </mat-form-field>
+                <br>
+                <mat-form-field class="<example-full-width">
+                    <input matInput [disabled]="name.value > ''" type="text" placeholder="{{ 'btnphone' | translate }}" id="phone" name="phone"
+                        #phone="ngModel" ngModel minlength="3" maxlength="50" pattern="[0-9]+">
+                </mat-form-field>
+                <mat-error *ngIf="phone.invalid && (phone.dirty || phone.touched)">{{ 'errmsgphone' | translate }}</mat-error>
+                <br>
+                <mat-form-field>
+                    <input matInput [matDatepicker]="pickerfromdt" placeholder="{{ 'btnfromdt' | translate }}" id="fromdt" name="fromdt" #fromdt="ngModel"
+                        [ngModel]="currentDate7">
+                    <mat-datepicker-toggle matSuffix [for]="pickerfromdt"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerfromdt></mat-datepicker>
+                </mat-form-field>
+                <br>
+                <mat-form-field>
+                    <input matInput [matDatepicker]="pickertodt" placeholder="{{ 'btntodt' | translate }}" id="todt" name="todt" #todt="ngModel"
+                        [ngModel]="currentDate">
+                    <mat-datepicker-toggle matSuffix [for]="pickertodt"></mat-datepicker-toggle>
+                    <mat-datepicker #pickertodt></mat-datepicker>
+                </mat-form-field>
+            </form>
+        </div>
+    </mat-card-content>
+</mat-card>
+<!-- addMode -->
+<ng-template #showAddMode>
+    <form #customerAddForm="ngForm" (ngSubmit)="setData(customerAddForm.value);toggle('resMode');getData();">
+        <mat-card-actions align="start">
+            <button type="submit" mat-raised-button [disabled]="!customerAddForm.valid" color="primary">{{ 'btnadd' | translate }}</button>
+            <button type="reset" (click)="this.customerAddForm.reset();" mat-raised-button [disabled]="!customerAddForm.valid" color="primary">{{ 'btnclear' | translate }}</button>
+            <span class="med-spacer"></span>
+            <span matTooltip="{{ 'btnsearch' | translate }}"><mat-icon color="primary" (click)="toggle('searchMode')">search</mat-icon></span>
+            <span class="small-spacer"></span>
+            <span matTooltip="{{ 'btnshowrecent' | translate }}"><mat-icon color="primary" (click)="toggle('resMode');getData();">cached</mat-icon></span>
+        </mat-card-actions>
+        <mat-error *ngIf="savedCustomerFlag">
+            {{ 'msgcutomersaved' | translate }}
+            <label class="small-spacer"></label>
+            <mat-icon (click)="this.customerAddForm.reset();savedCustomerFlag=false;toggle('searchMode');" svgIcon="clear"></mat-icon>
+        </mat-error>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnpid' | translate }}" #pid name="pid" id="pid" ngModel required minlength="3">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnapptno' | translate }}" #apptno name="apptno" id="apptno" ngModel minlength="1" pattern="[0-9]+">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput [matDatepicker]="btnsdttm" placeholder="{{ 'btnsdttm' | translate }}" #sdttm="ngModel" name="sdttm" id="sdttm"
+                ngModel date>
+            <mat-datepicker-toggle matSuffix [for]="btnsdttm"></mat-datepicker-toggle>
+            <mat-datepicker #btnsdttm></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput [matDatepicker]="btnadttm" placeholder="{{ 'btnadttm' | translate }}" #adttm="ngModel" name="adttm" id="sdttm"
+                ngModel date>
+            <mat-datepicker-toggle matSuffix [for]="btnadttm"></mat-datepicker-toggle>
+            <mat-datepicker #btnadttm></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnpermid' | translate }}" #permid name="permid" id="permid" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnregno' | translate }}" #regno name="regno" id="regno" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnname' | translate }}" #name name="name" id="name" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput [matDatepicker]="btndob" placeholder="{{ 'btndob' | translate }}" #dob="ngModel" name="dob" id="dob" ngModel
+                date>
+            <mat-datepicker-toggle matSuffix [for]="btndob"></mat-datepicker-toggle>
+            <mat-datepicker #btndob></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnspname' | translate }}" #spname name="spname" id="spname" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnweight' | translate }}" #weight name="weight" id="weight" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnheight' | translate }}" #height name="height" id="height" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select placeholder="{{ 'btnsex' | translate }}" #sex name="sex" id="sex" ngModel required>
+                <mat-option *ngFor="let sex of sexType" [value]="sex.value">
+                    {{ sex.viewValue }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnresaddress' | translate }}" #resaddress name="resaddress" id="resaddress" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnofffax' | translate }}" #offfax name="offfax" id="offfax" ngModel minlength="7" pattern="[0-9]+">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnmobile' | translate }}" #phone name="phone" id="phone" ngModel minlength="10" pattern="[0-9]+">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnoffemail' | translate }}" #offemail name="offemail" id="offemail" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnbillto' | translate }}" #billto name="billto" id="billto" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnbillcat' | translate }}" #billcat name="billcat" id="billcat" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnchrmethod' | translate }}" #chrmethod name="chrmethod" id="chrmethod" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnpmode' | translate }}" #pmode name="pmode" id="pmode" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnrdoc' | translate }}" #rdoc name="rdoc" id="rdoc" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnpcomp' | translate }}" #pcomp name="pcomp" id="pcomp" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnrlab' | translate }}" #rlab name="rlab" id="rlab" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btncexe' | translate }}" #cexe name="cexe" id="cexe" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btncole' | translate }}" #cole name="cole" id="cole" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnecode' | translate }}" #ecode name="ecode" id="ecode" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnreqn' | translate }}" #reqn name="reqn" id="reqn" ngModel>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btntreq' | translate }}" #treq name="treq" id="treq" ngModel>
+        </mat-form-field>
+        <br>
+        <mat-checkbox #collcharge name="collcharge" id="collcharge" ngModel>{{ 'collcharge'| translate }}</mat-checkbox>
+        <mat-checkbox #hcol name="hcol" id="hcol" ngModel>{{ 'hcol'| translate }}</mat-checkbox>
+        <div>
+            <mat-input-container class="example-full-width">
+                <textarea matInput rows="10" cols="40" type="text" placeholder="{{ 'plcholdercomments' | translate }}" name="comments" id="comments"
+                    ngModel></textarea>
+            </mat-input-container>
+        </div>
+    </form>
+</ng-template>
+<!-- edit mode -->
+<ng-template #showEditMode>
+    <form #customerEditForm="ngForm" (ngSubmit)="updateCustomerDoc(myCustID,customerEditForm.value);" novalidate>
+        <mat-card-actions align="start">
+            <button type="submit" mat-raised-button [disabled]="!customerEditForm.valid" color="primary">{{ 'btnadd' | translate }}</button>
+            <button type="reset" (click)="this.customerEditForm.reset();" mat-raised-button [disabled]="!customerEditForm.valid" color="primary">{{ 'btnclear' | translate }}</button>
+            <span class="med-spacer"></span>
+            <span matTooltip="{{ 'btnsearch' | translate }}"><mat-icon color="primary" (click)="toggle('searchMode')">search</mat-icon></span>
+            <span class="small-spacer"></span>
+            <span matTooltip="{{ 'btnshowrecent' | translate }}"><mat-icon color="primary" (click)="toggle('resMode');getData();">cached</mat-icon></span>
+        </mat-card-actions>
+        <mat-error *ngIf="savedCustomerFlag">
+            {{ 'msgcutomersaved' | translate }}
+            <label class="small-spacer"></label>
+            <mat-icon (click)="this.customerEditForm.reset();savedCustomerFlag=false;toggle('searchMode');" svgIcon="clear"></mat-icon>
+        </mat-error>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnpid' | translate }}" #pid name="pid" id="pid" [ngModel]="(myDocData | async)?.pid" required minlength="3">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnapptno' | translate }}" #apptno name="apptno" id="apptno" [ngModel]="(myDocData | async)?.apptno" minlength="1" pattern="[0-9]+">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput [matDatepicker]="btnsdttm" placeholder="{{ 'btnsdttm' | translate }}" #sdttm="ngModel" name="sdttm" id="sdttm"
+                [ngModel]="(myDocData | async)?.sdttm" date>
+            <mat-datepicker-toggle matSuffix [for]="btnsdttm"></mat-datepicker-toggle>
+            <mat-datepicker #btnsdttm></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput [matDatepicker]="btnadttm" placeholder="{{ 'btnadttm' | translate }}" #adttm="ngModel" name="adttm" id="adttm"
+                [ngModel]="(myDocData | async)?.adttm" date>
+            <mat-datepicker-toggle matSuffix [for]="btnadttm"></mat-datepicker-toggle>
+            <mat-datepicker #btnadttm></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnpermid' | translate }}" #permid name="permid" id="permid" [ngModel]="(myDocData | async)?.permid">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnregno' | translate }}" #regno name="regno" id="regno" [ngModel]="(myDocData | async)?.regno">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnname' | translate }}" #name name="name" id="name" [ngModel]="(myDocData | async)?.name">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput [matDatepicker]="btndob" placeholder="{{ 'btndob' | translate }}" #dob="ngModel" name="dob" id="dob" [ngModel]="(myDocData | async)?.dob"
+                date>
+            <mat-datepicker-toggle matSuffix [for]="btndob"></mat-datepicker-toggle>
+            <mat-datepicker #btndob></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnspname' | translate }}" #spname name="spname" id="spname" [ngModel]="(myDocData | async)?.spname">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnweight' | translate }}" #weight name="weight" id="weight" [ngModel]="(myDocData | async)?.weight">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnheight' | translate }}" #height name="height" id="height" [ngModel]="(myDocData | async)?.height">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select placeholder="{{ 'btnsex' | translate }}" #sex name="sex" id="sex" ngModel [ngModel]="(myDocData | async)?.sex">
+                <mat-option *ngFor="let sex of sexType" [value]="sex.value">
+                    {{ sex.viewValue }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnresaddress' | translate }}" #resaddress name="resaddress" id="resaddress" [ngModel]="(myDocData | async)?.resaddress">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnofffax' | translate }}" #offfax name="offfax" id="offfax" [ngModel]="(myDocData | async)?.offfax" minlength="7" pattern="[0-9]+">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnmobile' | translate }}" #phone name="phone" id="phone" [ngModel]="(myDocData | async)?.phone" minlength="10" pattern="[0-9]+">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnoffemail' | translate }}" #offemail name="offemail" id="offemail" [ngModel]="(myDocData | async)?.offemail">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnbillto' | translate }}" #billto name="billto" id="billto" [ngModel]="(myDocData | async)?.billto">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnbillcat' | translate }}" #billcat name="billcat" id="billcat" [ngModel]="(myDocData | async)?.billcat">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnchrmethod' | translate }}" #chrmethod name="chrmethod" id="chrmethod" [ngModel]="(myDocData | async)?.chrmethod">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnpmode' | translate }}" #pmode name="pmode" id="pmode" [ngModel]="(myDocData | async)?.pmode">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnrdoc' | translate }}" #rdoc name="rdoc" id="rdoc" [ngModel]="(myDocData | async)?.rdoc">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnpcomp' | translate }}" #pcomp name="pcomp" id="pcomp" [ngModel]="(myDocData | async)?.pcomp">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnrlab' | translate }}" #rlab name="rlab" id="rlab" [ngModel]="(myDocData | async)?.rlab">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btncexe' | translate }}" #cexe name="cexe" id="cexe" [ngModel]="(myDocData | async)?.cexe">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btncole' | translate }}" #cole name="cole" id="cole" [ngModel]="(myDocData | async)?.cole">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnecode' | translate }}" #ecode name="ecode" id="ecode" [ngModel]="(myDocData | async)?.ecode">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btnreqn' | translate }}" #reqn name="reqn" id="reqn" [ngModel]="(myDocData | async)?.reqn">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="{{ 'btntreq' | translate }}" #treq name="treq" id="treq" [ngModel]="(myDocData | async)?.treq">
+        </mat-form-field>
+        <br>
+        <mat-checkbox #collcharge name="collcharge" id="collcharge" [ngModel]="(myDocData | async)?.collcharge">{{ 'collcharge'| translate }}</mat-checkbox>
+        <mat-checkbox #hcol name="hcol" id="hcol" [ngModel]="(myDocData | async)?.hcol">{{ 'hcol'| translate }}</mat-checkbox>
+        <div>
+            <mat-input-container class="example-full-width">
+                <textarea matInput rows="10" cols="40" type="text" placeholder="{{ 'plcholdercomments' | translate }}" name="comments" id="comments"
+                    [ngModel]="(myDocData | async)?.comments"></textarea>
+            </mat-input-container>
+        </div>
+    </form>
+</ng-template>
+<!-- Results mode -->
+<ng-template #showResMode>
+    <mat-card-actions align="start">
+        <span class="med-spacer"></span>
+        <span class="med-spacer"></span>
+        <span class="med-spacer"></span>
+        <span matTooltip="{{ 'btnaddnew' | translate }}"><mat-icon color="primary" (click)="toggle('addMode')">add</mat-icon></span>
+        <span class="small-spacer"></span>
+        <span matTooltip="{{ 'btnsearchall' | translate }}"><mat-icon color="primary" (click)="toggle('searchMode')">search</mat-icon></span>
+    </mat-card-actions>
+    <div class="example-header">
+        <mat-form-field>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'btnsearchrecent' | translate}}">
+        </mat-form-field>
+    </div>
+    <div class="example-container mat-elevation-z8">
+        <span class="label-hint" align="end">{{ 'btnshowrecent' | translate }}</span>
+        <mat-table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="pid">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{'btnid' | translate}} </mat-header-cell>
+                <mat-cell *matCellDef="let row">{{row.pid}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{'btnname' | translate}} </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="phone">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{'btnphone' | translate}} </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.phone}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="key">
+                <mat-header-cell *matHeaderCellDef> {{'btnaction' | translate}} </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <span matTooltip="{{ 'btnedit' | translate }}"><button mat-icon-button (click)="getCustomerDoc(row.id);toggle('editMode')"><mat-icon color="primary">edit</mat-icon></button></span>
+                    <span matTooltip="{{ 'btndelete' | translate }}"><button mat-icon-button (click)="deleteCustomerDoc(row.id);"><mat-icon color="primary">delete</mat-icon></button></span>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+</ng-template>
