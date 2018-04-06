@@ -1,21 +1,29 @@
 # ignore firebase files
 
-.firebaserc
-firebase.json
+*.firebaserc
+*.firebase.json
+*.environment.ts
+*.environment.prod.ts
+*.zip
+*.apk
+*.npmignore
+firebase_hosting
 node_modules
-environment.ts
-environment.prod.ts
+
+# cordova setup files not required
+hooks
+plugins
+platforms
 
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-/dist
-/dist-server
-/tmp
-/out-tsc
+dist
+dist-server
+tmp
+out-tsc
 
 # dependencies
-/node_modules
 
 # IDEs and editors
 /.idea
