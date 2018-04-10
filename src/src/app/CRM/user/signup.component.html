@@ -7,7 +7,7 @@
       <span class="small-spacer"></span><a [routerLink]="['/login']" color="primary"><mat-icon>backspace</mat-icon></a>
     </mat-card-title>
     <mat-card-actions align="start" [@fallIn]='state' *ngIf="error">
-      <mat-error>{{ 'erremaillogin' | translate }}</mat-error>
+      <mat-error>{{ 'errmsguseridtaken' | translate }}</mat-error>
     </mat-card-actions>
     <div *ngIf="dataLoading"><mat-progress-spinner mode="indeterminate" [attr.color]="primary" [value]="15"></mat-progress-spinner></div>
     <div *ngIf="brokenNetwork" class="label-error">{{ 'NetworkConnectionError' | translate }}</div>
@@ -38,4 +38,3 @@
       </mat-card-actions>
 </ng-template>
 <footer></footer>
-

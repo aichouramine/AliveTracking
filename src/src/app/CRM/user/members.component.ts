@@ -41,7 +41,7 @@ export class MembersComponent implements OnInit {
         if (res.length > 0) {
           window.localStorage.setItem("eCRMkeyA", res[0]['isAdmin']);
           window.localStorage.setItem("eCRMkeyC", res[0]['company']);
-          window.localStorage.setItem("eCRMkeyN", this.afAuth.auth.currentUser.displayName);
+          window.localStorage.setItem("eCRMkeyN", formData.uname);
           window.localStorage.setItem("eCRMkeyE", this.afAuth.auth.currentUser.email);
           this.companycderror = false;
           this.savedChanges = true;

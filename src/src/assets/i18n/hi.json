@@ -443,7 +443,7 @@
     "errmsguname": "नाम आवश्यक है।",
     "errmsgunameminchar": "नाम कम से कम 4 अक्षर लंबा होना चाहिए।",
     "errmsgunamemaxchar": "नाम 24 वर्णों से अधिक लंबा नहीं हो सकता।",
-    "erremaillogin": "आपका ईमेल और पासवर्ड रिकॉर्ड के साथ मेल नहीं खाया।",
+    "erremaillogin": "आपका ईमेल और पासवर्ड रिकॉर्ड के साथ मेल नहीं खाया। दुबारा सेट करने के लिए info@elishconsulting.com",
     "errmsgpassword": "पासवर्ड की आवश्यकता है।",
     "errmsgpasswordminchar": "पासवर्ड न्यूनतम 5 वर्ण होना चाहिए।",
     "errmsgpasswordmaxchar": "पासवर्ड 30 वर्णों से अधिक नहीं होना चाहिए।",

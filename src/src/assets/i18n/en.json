@@ -444,7 +444,7 @@
     "errmsguname": "Name is required.",
     "errmsgunameminchar": "Name must be at least 4 characters long.",
     "errmsgunamemaxchar": "Name cannot be more than 24 characters long.",
-    "erremaillogin": "Your email and Password didn't match with records.",
+    "erremaillogin": "Your email and Password didn't match with records. To Reset password please send an email to contact@elishconsulting.com",
     "errmsgpassword": "Password is required.",
     "errmsgpasswordminchar": "Password should be minimum 5 characters.",
     "errmsgpasswordmaxchar": "Password should NOT be more than 30 characters.",

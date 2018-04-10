@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
       this._router.navigateByUrl('/members');
     }
   }
-
+/** web app version
   loginFb() {
     this.afAuth.auth.signInWithPopup(new firebase.auth.FacebookAuthProvider()).then(
       (success) => {
@@ -36,8 +36,8 @@ export class LoginComponent implements OnInit {
           this.afAuth.auth.currentUser.uid,
           this.afAuth.auth.currentUser.displayName,
           this.afAuth.auth.currentUser.phoneNumber,
-           this.afAuth.auth.currentUser.email,
-           this.afAuth.auth.currentUser.photoURL
+          this.afAuth.auth.currentUser.email,
+          this.afAuth.auth.currentUser.photoURL
         );
         this._router.navigate(['/members']);
       }).catch(
@@ -45,36 +45,56 @@ export class LoginComponent implements OnInit {
         this.error = err;
       })
   }
-/** web app version
-  loginGoogle() {
-    this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
-      (success) => {
-        this._eCRMFSService.setUserAuth(
-          this.afAuth.auth.currentUser.uid,
-          this.afAuth.auth.currentUser.displayName,
-          this.afAuth.auth.currentUser.phoneNumber,
-           this.afAuth.auth.currentUser.email,
-           this.afAuth.auth.currentUser.photoURL
-        );
-        this._router.navigate(['/members']);
-      }).catch(
-      (err) => {
-        this.error = err;
+    loginGoogle() {
+      this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
+        (success) => {
+          this._eCRMFSService.setUserAuth(
+            this.afAuth.auth.currentUser.uid,
+            this.afAuth.auth.currentUser.displayName,
+            this.afAuth.auth.currentUser.phoneNumber,
+             this.afAuth.auth.currentUser.email,
+             this.afAuth.auth.currentUser.photoURL
+          );
+          this._router.navigate(['/members']);
+        }).catch(
+        (err) => {
+          this.error = err;
+        })
+    }
+    */
+  loginFb() { // mobile version
+    this.afAuth.auth.signInWithRedirect(new firebase.auth.FacebookAuthProvider())
+      .then(function () {
+        return firebase.auth().getRedirectResult();
       })
-  }
-  */
-  loginGoogle() { // mobile version
-    //var provider = new firebase.auth.GoogleAuthProvider();
-    //firebase.auth().signInWithRedirect(provider).then(function() {
-    this.afAuth.auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider())
     .then(
       (success) => {
         this._eCRMFSService.setUserAuth(
           this.afAuth.auth.currentUser.uid,
           this.afAuth.auth.currentUser.displayName,
           this.afAuth.auth.currentUser.phoneNumber,
-           this.afAuth.auth.currentUser.email,
-           this.afAuth.auth.currentUser.photoURL
+          this.afAuth.auth.currentUser.email,
+          this.afAuth.auth.currentUser.photoURL
+        );
+        this._router.navigate(['/members']);
+      }).catch(
+      (err) => {
+        this.error = err;
+      })
+  }
+  loginGoogle() { // mobile version
+    //var provider = new firebase.auth.GoogleAuthProvider();
+    //firebase.auth().signInWithRedirect(provider).then(function() {
+    this.afAuth.auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+    firebase.auth().getRedirectResult()
+      .then(
+      (success) => {
+        this._eCRMFSService.setUserAuth(
+          this.afAuth.auth.currentUser.uid,
+          this.afAuth.auth.currentUser.displayName,
+          this.afAuth.auth.currentUser.phoneNumber,
+          this.afAuth.auth.currentUser.email,
+          this.afAuth.auth.currentUser.photoURL
         );
         this._router.navigate(['/members']);
       }).catch(

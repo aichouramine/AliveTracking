@@ -9,6 +9,7 @@
 *.npmignore
 firebase_hosting
 node_modules
+temp
 
 # cordova setup files not required
 hooks

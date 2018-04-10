@@ -8,7 +8,7 @@
       <mat-card-title align="center">
         Welcome {{ (userPref | async)?.authuname }}
         <span class="small-spacer"></span>
-        <span *ngIf="userPref"><img src="{{ (userPref | async)?.authphoto }}" width="30" height="30"></span>
+        <span><img src="{{ (userPref | async)?.authphoto }}" width="30" height="30"></span>
         <span class="small-spacer"></span>
         <button mat-raised-button color="primary" (click)="logout()">{{'btnlogout' | translate}}</button>
       </mat-card-title>
